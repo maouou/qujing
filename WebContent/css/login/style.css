@@ -1,0 +1,37 @@
+@charset "UTF-8";
+body{
+	width:100%;
+	height:100%;
+}
+.loginSize{
+	width:20%;
+	float:left;
+}
+.loginPhoto{
+	width:80%;
+	float:right;
+}
+.bg{
+	width:100%;
+	height:100%;
+}
+.loginbg{
+	width:80%;
+}
+.logo img{
+	width:100%;
+}
+.title{
+	padding-left:30px;
+	font-family:"微软雅黑";
+}
+.login_acount_text{
+	font-family:"微软雅黑";
+	padding-bottom:5px;
+}
+.loginInput{
+	padding-bottom:9px;
+}
+.text{
+
+}

@@ -1,0 +1,225 @@
+package qj.admin.controller;
+
+import java.nio.channels.ScatteringByteChannel;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.hibernate.service.spi.Startable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import qj.admin.pojo.CancleTask;
+import qj.admin.pojo.Task;
+import qj.admin.pojo.User;
+import qj.admin.service.AdminUserManageService;
+import qj.admin.service.CancleTaskService;
+import qj.admin.service.MessageService;
+import qj.util.Page;
+
+@Controller
+@RequestMapping("/admin/canclemanage")
+public class AdminCancleManageController {
+	@Autowired
+	CancleTaskService cancleTaskService;
+	@Autowired
+	MessageService messageService;
+	@Autowired 
+	AdminUserManageService adminUserManageService;
+	@Autowired
+	HttpServletRequest request;
+	
+	@RequestMapping("/list")
+	@ResponseBody
+	public JSONArray list(/*Map<String, Object>map, Integer start*/)
+	{
+		/*Page page;
+		if(start == null)
+		{
+			page = new Page(0, 10);
+		}
+		else
+		{
+			page = new Page(start , 10);
+		}
+		page.setTotal(cancleTaskService.getTotal());*/
+		List<CancleTask>cancleTasks = cancleTaskService.list();
+		String jsonString = "[";
+		for(int i = 0 ; i < cancleTasks.size() ; i++)
+		{
+			CancleTask cancleTask = cancleTasks.get(i);
+			Task task = cancleTask.getTask();
+			if(task.receiverCancle == 2)
+				continue;
+			if(task.receiverCancle == 0 && task.senderCancle == 1)
+				continue;
+			if(task.receiverCancle == 0 && task.senderCancle == 0)
+				continue;
+			String type = "";
+			if(task.receiverCancle == 1 && task.senderCancle == 0)
+				type = "收货方取消";
+			if(task.receiverCancle == 1 && task.senderCancle == 1)
+				type = "送货方者取消";
+			String taskName = task.getName();
+			User receiver = adminUserManageService.get(Integer.valueOf(task.receiverid));
+			User sender = adminUserManageService.get(Integer.valueOf(task.senderid));
+			String receiverName = receiver.getUsername();
+			String senderName = sender.getUsername();
+			String content = cancleTask.getContent();
+			String cancleId = String.valueOf(cancleTask.getId());
+			String tempString = "{\"taskName\":\"" + taskName + "\",\"receiver\":\"" + receiverName + "\",\"sender\":\""
+				     + senderName + "\",\"type\":\"" + type + "\",\"content\":\"" + content + "\",\"id\":\"" + cancleId + "\"}";
+			if(i == cancleTasks.size()-1)
+				jsonString = jsonString + tempString;
+			else
+				jsonString = jsonString + tempString + ",";
+		}
+		jsonString += "]";
+		System.out.print(jsonString);
+		JSONArray jsonObject = JSONArray.parseArray(jsonString);
+		return jsonObject;
+		/*map.put("cancleTasks", cancleTasks);
+		map.put("page", page);
+		return "admin/adminCancleManage";*/
+	}
+	
+	@RequestMapping("/showDetail")
+	@ResponseBody
+	public JSONObject showDetail(int id)
+	{
+		System.out.println("显示取消详情");
+		CancleTask cancleTask = null;
+		cancleTask = cancleTaskService.get(id);
+		User receiver = adminUserManageService.get(Integer.valueOf(cancleTask.getTask().receiverid));
+		User sender = adminUserManageService.get(Integer.valueOf(cancleTask.getTask().senderid));
+		Task task = cancleTask.getTask();
+		int receiverpoints = Integer.valueOf(task.points) + receiver.points;
+		String taskName = task.name;
+		String taskContent = task.content;
+		String reportContent = cancleTask.getContent();
+		String receiverName = receiver.getUsername();
+		String receiverIDNumber = receiver.IDNumber;
+		String senderName = sender.getUsername();
+		String senderIDNumber = sender.IDNumber;
+		
+		String receiverPoints = String.valueOf(receiverpoints);
+		String suitID = String.valueOf(cancleTask.getId());
+		String senderPoints = String.valueOf(sender.getPoints());
+		String type = "";
+		if(task.receiverCancle == 1 && task.senderCancle == 0)
+			type = "1";
+		if(task.receiverCancle == 1 && task.senderCancle == 1)
+			type = "2";
+		String typeName = "";
+		String reporterName = "";
+		String reporterIDNumber = "";
+		if(task.receiverCancle == 1 && task.senderCancle == 0)
+		{
+			typeName = "收货方取消";
+			reporterName = receiverName;
+			reporterIDNumber = receiverIDNumber;
+		}
+			
+		if(task.receiverCancle == 1 && task.senderCancle == 1)
+		{
+			typeName = "送货方取消";
+			reporterName = senderName;
+			reporterIDNumber = senderIDNumber;
+		}
+			
+		String jsonString= "{\"taskName\":\"" + taskName + "\",\"taskContent\":\"" + taskContent + "\",\"cancleContent\":\"" + reportContent
+				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverIDNumber\":\"" + receiverIDNumber + "\",\"senderName\":\"" + senderName
+				+"\",\"senderIDNumber\":\"" + senderIDNumber + "\",\"cancleName\":\"" + reporterName + "\",\"cancleIDNumber\":\"" + reporterIDNumber
+				+"\",\"cancleID\":\"" + suitID + "\",\"receiverPoints\":\"" + receiverPoints + "\",\"senderPoints\":\"" + senderPoints + "\",\"type\":\"" + type
+				+"\",\"typeName\":\"" + typeName + "\"}";
+		System.out.println(jsonString);
+		JSONObject jsonObject = JSONObject.parseObject(jsonString);
+		return jsonObject;
+		/*request.setAttribute("receiver", receiver);
+		request.setAttribute("sender", sender);
+		request.setAttribute("cancleTask", cancleTask);
+		return "admin/cancleDetail";*/
+	}
+	
+	@RequestMapping("/cancle")
+	@ResponseBody
+	public JSONArray cancleTask(int type,int receiverpoints,int senderpoints,int id)
+	{
+		if(type == 1)
+			return agreeReceiverCancle(id, receiverpoints, senderpoints);
+		if(type == 2)
+			return agreeSenderCancle(id, receiverpoints, senderpoints);
+		else
+			return null;
+	}
+	
+	@RequestMapping("/refusecancle")
+	@ResponseBody
+	public JSONArray refuseCancle(int type,int id)
+	{
+		if(type == 1)
+			return refuseReceiverCancle(id);
+		if(type ==2)
+			return refuseSenderCancle(id);
+		else
+			return null;
+	}
+	
+	@RequestMapping("/agreeReceiverCancle")
+	@ResponseBody
+	public JSONArray agreeReceiverCancle(int id,int receiverpoints,int senderpoints)
+	{
+		CancleTask cancleTask = cancleTaskService.get(id);
+		String receiverIDNumber = cancleTask.getTask().receiverid;
+		String senderIDNumber = cancleTask.getTask().senderid;
+		cancleTaskService.agreeReceiverCancle(id);
+		adminUserManageService.changePoints(Integer.valueOf(receiverIDNumber), receiverpoints);
+		adminUserManageService.changePoints(Integer.valueOf(senderIDNumber), senderpoints);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请已被通过。积分已调整。", 0, 0, Integer.valueOf(receiverIDNumber), 0);
+		messageService.add("您接收的'" + cancleTask.getTask().name + "'任务，收货方已取消，相应积分已调整，感谢您的理解与配合。", 0, 0, Integer.valueOf(senderIDNumber), 0);
+		return list();
+	}
+	
+	@RequestMapping("/refuseReceiverCancle")
+	@ResponseBody
+	public JSONArray refuseReceiverCancle(int id)
+	{
+		CancleTask cancleTask = cancleTaskService.get(id);
+		String receiverIDNumber = cancleTask.getTask().receiverid;
+		cancleTaskService.refuseReceiverCancle(id);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请，经审核沟通不予通过，感谢您的理解与配合。", 0, 0, Integer.valueOf(receiverIDNumber), 0);
+		return list();
+	}
+	
+	@RequestMapping("/agreeSenderCancle")
+	@ResponseBody
+	public JSONArray agreeSenderCancle(int id,int receiverpoints,int senderpoints)
+	{
+		CancleTask cancleTask = cancleTaskService.get(id);
+		String receiverIDNumber = cancleTask.getTask().receiverid;
+		String senderIDNumber = cancleTask.getTask().senderid;
+		cancleTaskService.agreeSenderCancle(id);
+		adminUserManageService.changePoints(Integer.valueOf(receiverIDNumber), receiverpoints);
+		adminUserManageService.changePoints(Integer.valueOf(senderIDNumber), senderpoints);
+		messageService.add("您发布的'" + cancleTask.getTask().name + "'任务，送货方已取消，相应积分已调整，感谢您的理解与配合。", 0, 0, Integer.valueOf(receiverIDNumber), 0);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请已被通过。积分已调整。", 0, 0, Integer.valueOf(senderIDNumber), 0);
+		return list();
+	}
+	
+	@RequestMapping("/refuseSenderCancle")
+	@ResponseBody
+	public JSONArray refuseSenderCancle(int id)
+	{
+		CancleTask cancleTask = cancleTaskService.get(id);
+		String senderIDNumber = cancleTask.getTask().senderid;
+		cancleTaskService.refuseSenderCancle(id);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请，经审核沟通不予通过，请您尽快完成任务。感谢您的理解与配合！", 0, 0, Integer.valueOf(senderIDNumber), 0);
+		return list();
+	}
+}
