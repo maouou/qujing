@@ -35,7 +35,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public void update(Task task) {
 		// TODO Auto-generated method stub
-		task.setReceiverCancle(0);
+		task.setState(2);
 		task.setReceiverid("221701237");
 		Session session = sessionFactory.getCurrentSession();
 		session.update(task);
@@ -44,7 +44,7 @@ public class TaskDAOImpl implements TaskDAO {
 	@Override
 	public void delete(Task task) {
 		// TODO Auto-generated method stub
-		task.setReceiverCancle(2);
+		task.setState(7);
 		Session session = sessionFactory.getCurrentSession();
 		session.update(task);
 	}

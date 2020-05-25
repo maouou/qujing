@@ -32,9 +32,24 @@ public class CancleTask {
     @Fetch(value = FetchMode.JOIN)
 	private CancleType type;
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-    public Date time;
+    private Date time;
+	private Integer version;
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
+	private Date updateTime;
 	public int getId() {
 		return id;
+	}
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 	public void setId(int id) {
 		this.id = id;

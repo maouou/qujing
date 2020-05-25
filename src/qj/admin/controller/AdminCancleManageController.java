@@ -55,16 +55,12 @@ public class AdminCancleManageController {
 		{
 			CancleTask cancleTask = cancleTasks.get(i);
 			Task task = cancleTask.getTask();
-			if(task.receiverCancle == 2)
-				continue;
-			if(task.receiverCancle == 0 && task.senderCancle == 1)
-				continue;
-			if(task.receiverCancle == 0 && task.senderCancle == 0)
+			if(task.getState() == 1)
 				continue;
 			String type = "";
-			if(task.receiverCancle == 1 && task.senderCancle == 0)
+			if(task.getState() == 4)
 				type = "收货方取消";
-			if(task.receiverCancle == 1 && task.senderCancle == 1)
+			if(task.getState() == 3)
 				type = "送货方者取消";
 			String taskName = task.getName();
 			User receiver = adminUserManageService.get(Integer.valueOf(task.receiverid));
@@ -112,21 +108,21 @@ public class AdminCancleManageController {
 		String suitID = String.valueOf(cancleTask.getId());
 		String senderPoints = String.valueOf(sender.getPoints());
 		String type = "";
-		if(task.receiverCancle == 1 && task.senderCancle == 0)
+		if(task.getState()==4)
 			type = "1";
-		if(task.receiverCancle == 1 && task.senderCancle == 1)
+		if(task.getState()==3)
 			type = "2";
 		String typeName = "";
 		String reporterName = "";
 		String reporterIDNumber = "";
-		if(task.receiverCancle == 1 && task.senderCancle == 0)
+		if(task.getState()==3)
 		{
 			typeName = "收货方取消";
 			reporterName = receiverName;
 			reporterIDNumber = receiverIDNumber;
 		}
 			
-		if(task.receiverCancle == 1 && task.senderCancle == 1)
+		if(task.getState()==4)
 		{
 			typeName = "送货方取消";
 			reporterName = senderName;
