@@ -2,6 +2,8 @@ package qj.admin.dao;
 
 import java.util.List;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.eclipse.jdt.internal.compiler.env.IModule.IService;
 import org.hibernate.Query;
 
@@ -35,7 +37,10 @@ public class UserDAOImpl implements UserDAO{
 		//type1->reset password
 		if(type == 1)
 		{
-			user.setPassword("123456ABc");
+			  ByteSource credentialsSalt = ByteSource.Util.bytes(user.studentId);
+		        String pwd = new SimpleHash("MD5","123456ABc",
+		                credentialsSalt,1024).toBase64();
+			user.setPassword(pwd);
 			Session session = sessionFactory.getCurrentSession();
 			session.update(user);
 		}
@@ -63,11 +68,11 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	@Override
-	public User get(int IDNumber) {
+	public User get(int studentId) {
 		// TODO 自动生成的方法存根
 		User user;
 		Session session = sessionFactory.getCurrentSession();
-		String hqlString = "SELECT u FROM User As u WHERE u.IDNumber like '" + IDNumber + "'";
+		String hqlString = "SELECT u FROM User As u WHERE u.studentId like '" + studentId + "'";
 		Query query = session.createQuery(hqlString);
 		user = (User)query.uniqueResult();
 		return user;
@@ -96,7 +101,7 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	@Override
-	public boolean isExist(int IDNumber) {
+	public boolean isExist(int studentId) {
 		// TODO 自动生成的方法存根
 		return false;
 	}

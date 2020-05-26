@@ -77,11 +77,11 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getStudentId() {
+	public String getIDNumber() {
 		return studentId;
 	}
-	public void setStudentId(String studentId) {
-		this.studentId = studentId;
+	public void setIDNumber(String iDNumber) {
+		studentId = iDNumber;
 	}
 	public String getPassword() {
 		return password;

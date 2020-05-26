@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.dialect.PointbaseDialect;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class AdminReportManageController {
 	MessageService messageService;
 	@Autowired
 	AdminUserManageController adminUserManageController;
+	@Autowired
+	HttpServletResponse response;
+	
 	@RequestMapping("/list")
 	@ResponseBody
 	public JSONArray list(/*Map<String, Object>map,Integer start*/)
@@ -54,6 +58,7 @@ public class AdminReportManageController {
 		}
 		int total = suitService.getTotal();
 		page.setTotal(total);*/
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		List<Suit> suits = suitService.list();
 		String jsonString = "[";
 		for(int i = 0; i < suits.size(); i++)
@@ -92,6 +97,7 @@ public class AdminReportManageController {
 	@ResponseBody
 	public JSONObject showReport(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		Suit suit = null;
 		suit = suitService.get(id);
 		User receiver = adminUserManageService.get(Integer.valueOf(suit.getTask().receiverid));
@@ -102,17 +108,17 @@ public class AdminReportManageController {
 		String taskContent = suit.getTask().content;
 		String reportContent = suit.getContent();
 		String receiverName = receiver.getUsername();
-		String receiverIDNumber = receiver.IDNumber;
+		String receiverstudentId = receiver.studentId;
 		String senderName = sender.getUsername();
-		String senderIDNumber = sender.IDNumber;
+		String senderstudentId = sender.studentId;
 		String reporterName = senderName;
-		String reporterIDNumber = senderIDNumber;
+		String reporterstudentId = senderstudentId;
 		String receiverPoints = String.valueOf(receiverpoints);
 		String suitID = String.valueOf(suit.getId());
 		String senderPoints = String.valueOf(sender.getPoints());
 		String jsonString= "{\"taskName\":\"" + taskName + "\",\"taskContent\":\"" + taskContent + "\",\"reportContent\":\"" + reportContent
-				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverIDNumber\":\"" + receiverIDNumber + "\",\"senderName\":\"" + senderName
-				+"\",\"senderIDNumber\":\"" + senderIDNumber + "\",\"reporterName\":\"" + reporterName + "\",\"reporterIDNumber\":\"" + reporterIDNumber
+				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverstudentId\":\"" + receiverstudentId + "\",\"senderName\":\"" + senderName
+				+"\",\"senderstudentId\":\"" + senderstudentId + "\",\"reporterName\":\"" + reporterName + "\",\"reporterstudentId\":\"" + reporterstudentId
 				+"\",\"suitID\":\"" + suitID + "\",\"receiverPoints\":\"" + receiverPoints + "\",\"senderPoints\":\"" + senderPoints + "\"}";
 		System.out.println(jsonString);
 		JSONObject jsonObject = JSONObject.parseObject(jsonString);
@@ -127,6 +133,7 @@ public class AdminReportManageController {
 	@ResponseBody
 	public JSONArray deleteTask(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		suitService.setHandeled(id);
 		Task task = suitService.getTask(id);
 		taskservice.delete(task);
@@ -140,6 +147,7 @@ public class AdminReportManageController {
 	@ResponseBody
 	public JSONArray leagalTask(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		suitService.setHandled(id);
 		Task task = suitService.getTask(id);
 		messageService.add("您反馈的" + task.name + "任务,经管理员审核不存在违规行为，感谢您的理解与配合！", 0, 0, Integer.valueOf(task.senderid), 0);
@@ -150,6 +158,7 @@ public class AdminReportManageController {
 	@ResponseBody
 	public JSONArray turnUserManage(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		suitService.setHandeled(id);
 		Task task = suitService.getTask(id);
 		taskservice.delete(task);
@@ -158,17 +167,18 @@ public class AdminReportManageController {
 	
 	@RequestMapping("openusermanage")
 	@ResponseBody
-	public JSONArray openUserManage(int receiverIDNumber,int senderIDNumber,int id)
+	public JSONArray openUserManage(int receiverstudentId,int senderstudentId,int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		String receiverPoints = request.getParameter("receiverpoints");
 		String senderPoints = request.getParameter("senderpoints");
 		Task task = suitService.getTask(id);
-		adminUserManageService.changePoints(receiverIDNumber, Integer.valueOf(receiverPoints));
-		adminUserManageService.changePoints(senderIDNumber, Integer.valueOf(senderPoints));
+		adminUserManageService.changePoints(receiverstudentId, Integer.valueOf(receiverPoints));
+		adminUserManageService.changePoints(senderstudentId, Integer.valueOf(senderPoints));
 		suitService.setHandeled(id);
 		taskservice.delete(task);
-		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverIDNumber, 0);
-		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderIDNumber, 0);
+		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverstudentId, 0);
+		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderstudentId, 0);
 		return list();
 	}
 }

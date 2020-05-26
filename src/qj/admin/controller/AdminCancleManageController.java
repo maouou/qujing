@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.service.spi.Startable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import qj.util.Page;
 @Controller
 @RequestMapping("/admin/canclemanage")
 public class AdminCancleManageController {
+	
+	//测试一下
 	@Autowired
 	CancleTaskService cancleTaskService;
 	@Autowired
@@ -34,6 +37,8 @@ public class AdminCancleManageController {
 	AdminUserManageService adminUserManageService;
 	@Autowired
 	HttpServletRequest request;
+	@Autowired
+	HttpServletResponse response;
 	
 	@RequestMapping("/list")
 	@ResponseBody
@@ -49,6 +54,7 @@ public class AdminCancleManageController {
 			page = new Page(start , 10);
 		}
 		page.setTotal(cancleTaskService.getTotal());*/
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		List<CancleTask>cancleTasks = cancleTaskService.list();
 		String jsonString = "[";
 		for(int i = 0 ; i < cancleTasks.size() ; i++)
@@ -89,6 +95,7 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONObject showDetail(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		System.out.println("显示取消详情");
 		CancleTask cancleTask = null;
 		cancleTask = cancleTaskService.get(id);
@@ -100,9 +107,9 @@ public class AdminCancleManageController {
 		String taskContent = task.content;
 		String reportContent = cancleTask.getContent();
 		String receiverName = receiver.getUsername();
-		String receiverIDNumber = receiver.IDNumber;
+		String receiverstudentId = receiver.studentId;
 		String senderName = sender.getUsername();
-		String senderIDNumber = sender.IDNumber;
+		String senderstudentId = sender.studentId;
 		
 		String receiverPoints = String.valueOf(receiverpoints);
 		String suitID = String.valueOf(cancleTask.getId());
@@ -114,24 +121,24 @@ public class AdminCancleManageController {
 			type = "2";
 		String typeName = "";
 		String reporterName = "";
-		String reporterIDNumber = "";
+		String reporterstudentId = "";
 		if(task.getState()==3)
 		{
 			typeName = "收货方取消";
 			reporterName = receiverName;
-			reporterIDNumber = receiverIDNumber;
+			reporterstudentId = receiverstudentId;
 		}
 			
 		if(task.getState()==4)
 		{
 			typeName = "送货方取消";
 			reporterName = senderName;
-			reporterIDNumber = senderIDNumber;
+			reporterstudentId = senderstudentId;
 		}
 			
 		String jsonString= "{\"taskName\":\"" + taskName + "\",\"taskContent\":\"" + taskContent + "\",\"cancleContent\":\"" + reportContent
-				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverIDNumber\":\"" + receiverIDNumber + "\",\"senderName\":\"" + senderName
-				+"\",\"senderIDNumber\":\"" + senderIDNumber + "\",\"cancleName\":\"" + reporterName + "\",\"cancleIDNumber\":\"" + reporterIDNumber
+				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverstudentId\":\"" + receiverstudentId + "\",\"senderName\":\"" + senderName
+				+"\",\"senderstudentId\":\"" + senderstudentId + "\",\"cancleName\":\"" + reporterName + "\",\"canclestudentId\":\"" + reporterstudentId
 				+"\",\"cancleID\":\"" + suitID + "\",\"receiverPoints\":\"" + receiverPoints + "\",\"senderPoints\":\"" + senderPoints + "\",\"type\":\"" + type
 				+"\",\"typeName\":\"" + typeName + "\"}";
 		System.out.println(jsonString);
@@ -147,6 +154,7 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONArray cancleTask(int type,int receiverpoints,int senderpoints,int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		if(type == 1)
 			return agreeReceiverCancle(id, receiverpoints, senderpoints);
 		if(type == 2)
@@ -159,6 +167,7 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONArray refuseCancle(int type,int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		if(type == 1)
 			return refuseReceiverCancle(id);
 		if(type ==2)
@@ -171,14 +180,15 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONArray agreeReceiverCancle(int id,int receiverpoints,int senderpoints)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		CancleTask cancleTask = cancleTaskService.get(id);
-		String receiverIDNumber = cancleTask.getTask().receiverid;
-		String senderIDNumber = cancleTask.getTask().senderid;
+		String receiverstudentId = cancleTask.getTask().receiverid;
+		String senderstudentId = cancleTask.getTask().senderid;
 		cancleTaskService.agreeReceiverCancle(id);
-		adminUserManageService.changePoints(Integer.valueOf(receiverIDNumber), receiverpoints);
-		adminUserManageService.changePoints(Integer.valueOf(senderIDNumber), senderpoints);
-		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请已被通过。积分已调整。", 0, 0, Integer.valueOf(receiverIDNumber), 0);
-		messageService.add("您接收的'" + cancleTask.getTask().name + "'任务，收货方已取消，相应积分已调整，感谢您的理解与配合。", 0, 0, Integer.valueOf(senderIDNumber), 0);
+		adminUserManageService.changePoints(Integer.valueOf(receiverstudentId), receiverpoints);
+		adminUserManageService.changePoints(Integer.valueOf(senderstudentId), senderpoints);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请已被通过。积分已调整。", 0, 0, Integer.valueOf(receiverstudentId), 0);
+		messageService.add("您接收的'" + cancleTask.getTask().name + "'任务，收货方已取消，相应积分已调整，感谢您的理解与配合。", 0, 0, Integer.valueOf(senderstudentId), 0);
 		return list();
 	}
 	
@@ -186,10 +196,11 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONArray refuseReceiverCancle(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		CancleTask cancleTask = cancleTaskService.get(id);
-		String receiverIDNumber = cancleTask.getTask().receiverid;
+		String receiverstudentId = cancleTask.getTask().receiverid;
 		cancleTaskService.refuseReceiverCancle(id);
-		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请，经审核沟通不予通过，感谢您的理解与配合。", 0, 0, Integer.valueOf(receiverIDNumber), 0);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请，经审核沟通不予通过，感谢您的理解与配合。", 0, 0, Integer.valueOf(receiverstudentId), 0);
 		return list();
 	}
 	
@@ -197,14 +208,15 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONArray agreeSenderCancle(int id,int receiverpoints,int senderpoints)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		CancleTask cancleTask = cancleTaskService.get(id);
-		String receiverIDNumber = cancleTask.getTask().receiverid;
-		String senderIDNumber = cancleTask.getTask().senderid;
+		String receiverstudentId = cancleTask.getTask().receiverid;
+		String senderstudentId = cancleTask.getTask().senderid;
 		cancleTaskService.agreeSenderCancle(id);
-		adminUserManageService.changePoints(Integer.valueOf(receiverIDNumber), receiverpoints);
-		adminUserManageService.changePoints(Integer.valueOf(senderIDNumber), senderpoints);
-		messageService.add("您发布的'" + cancleTask.getTask().name + "'任务，送货方已取消，相应积分已调整，感谢您的理解与配合。", 0, 0, Integer.valueOf(receiverIDNumber), 0);
-		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请已被通过。积分已调整。", 0, 0, Integer.valueOf(senderIDNumber), 0);
+		adminUserManageService.changePoints(Integer.valueOf(receiverstudentId), receiverpoints);
+		adminUserManageService.changePoints(Integer.valueOf(senderstudentId), senderpoints);
+		messageService.add("您发布的'" + cancleTask.getTask().name + "'任务，送货方已取消，相应积分已调整，感谢您的理解与配合。", 0, 0, Integer.valueOf(receiverstudentId), 0);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请已被通过。积分已调整。", 0, 0, Integer.valueOf(senderstudentId), 0);
 		return list();
 	}
 	
@@ -212,10 +224,11 @@ public class AdminCancleManageController {
 	@ResponseBody
 	public JSONArray refuseSenderCancle(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		CancleTask cancleTask = cancleTaskService.get(id);
-		String senderIDNumber = cancleTask.getTask().senderid;
+		String senderstudentId = cancleTask.getTask().senderid;
 		cancleTaskService.refuseSenderCancle(id);
-		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请，经审核沟通不予通过，请您尽快完成任务。感谢您的理解与配合！", 0, 0, Integer.valueOf(senderIDNumber), 0);
+		messageService.add("您提交的对'" + cancleTask.getTask().name + "'任务的取消申请，经审核沟通不予通过，请您尽快完成任务。感谢您的理解与配合！", 0, 0, Integer.valueOf(senderstudentId), 0);
 		return list();
 	}
 }
