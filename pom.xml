@@ -66,7 +66,6 @@
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-
 		<!-- MySQL 依赖 -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -159,6 +158,11 @@
 			<artifactId>javassist</artifactId>
 			<version>3.23.1-GA</version>
 		</dependency>
+		<dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
