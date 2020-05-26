@@ -31,7 +31,7 @@ public class User {
     //用户名
     public String username;
     //学号
-    public String IDNumber;
+    public String studentId;
     //密码
     public String password;
     //用户所拥有的积分
@@ -77,11 +77,11 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getIDNumber() {
-		return IDNumber;
+	public String getStudentId() {
+		return studentId;
 	}
-	public void setIDNumber(String iDNumber) {
-		IDNumber = iDNumber;
+	public void setStudentId(String studentId) {
+		this.studentId = studentId;
 	}
 	public String getPassword() {
 		return password;
@@ -151,7 +151,7 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", username=" + username + ", IDNumber=" + IDNumber
+		return "User [id=" + id + ", email=" + email + ", username=" + username + ", IDNumber=" + studentId
 				+ ", password=" + password + ", points=" + points + ", state=" + state + ", content=" + content
 				+ ", startTime=" + startTime + ", endTime=" + endTime + ", receiveTaskNumber=" + receiveTaskNumber
 				+ ", maliciousAcceptanceNumber=" + maliciousAcceptanceNumber + ", reportedNumber=" + reportedNumber

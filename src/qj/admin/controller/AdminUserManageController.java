@@ -57,7 +57,7 @@ public class AdminUserManageController {
 		for(int i = 0; i < users.size(); i++)
 		{
 			User user = users.get(i);
-			String userIDNumber = user.getIDNumber();
+			String userIDNumber = user.getStudentId();
 			String userName = user.getUsername();
 			String points = String.valueOf(user.getPoints());
 			String state = String.valueOf(user.state);
