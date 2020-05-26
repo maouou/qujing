@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,8 @@ public class AdminFeedBackManageController {
 	TaskService taskService;
 	@Autowired
 	AdminUserManageController adminUserManageController;
+	@Autowired
+	HttpServletResponse response;
 	
 	@RequestMapping("/list")
 	@ResponseBody
@@ -54,6 +57,7 @@ public class AdminFeedBackManageController {
 		}
 		int total = feedBackService.getTotal();
 		page.setTotal(total);*/
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		List<FeedBack> feedBacks = feedBackService.list();
 		String jsonString = "[";
 		for(int i = 0; i < feedBacks.size(); i++)
@@ -92,6 +96,7 @@ public class AdminFeedBackManageController {
 	@ResponseBody
 	public JSONObject showDetail(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		FeedBack feedBack = null;
 		feedBack = feedBackService.get(id);
 		User receiver = adminUserManageService.get(Integer.valueOf(feedBack.getTask().receiverid));
@@ -102,17 +107,17 @@ public class AdminFeedBackManageController {
 		String taskContent = feedBack.getTask().content;
 		String reportContent = feedBack.getContent();
 		String receiverName = receiver.getUsername();
-		String receiverIDNumber = receiver.IDNumber;
+		String receiverstudentId = receiver.studentId;
 		String senderName = sender.getUsername();
-		String senderIDNumber = sender.IDNumber;
+		String senderstudentId = sender.studentId;
 		String reporterName = senderName;
-		String reporterIDNumber = senderIDNumber;
+		String reporterstudentId = senderstudentId;
 		String receiverPoints = String.valueOf(receiverpoints);
 		String suitID = String.valueOf(feedBack.getId());
 		String senderPoints = String.valueOf(sender.getPoints());
 		String jsonString= "{\"taskName\":\"" + taskName + "\",\"taskContent\":\"" + taskContent + "\",\"backContent\":\"" + reportContent
-				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverIDNumber\":\"" + receiverIDNumber + "\",\"senderName\":\"" + senderName
-				+"\",\"senderIDNumber\":\"" + senderIDNumber + "\",\"backName\":\"" + reporterName + "\",\"backIDNumber\":\"" + reporterIDNumber
+				+"\",\"receiverName\":\"" + receiverName + "\",\"receiverstudentId\":\"" + receiverstudentId + "\",\"senderName\":\"" + senderName
+				+"\",\"senderstudentId\":\"" + senderstudentId + "\",\"backName\":\"" + reporterName + "\",\"backstudentId\":\"" + reporterstudentId
 				+"\",\"backID\":\"" + suitID + "\",\"receiverPoints\":\"" + receiverPoints + "\",\"senderPoints\":\"" + senderPoints + "\"}";
 		System.out.println(jsonString);
 		JSONObject jsonObject = JSONObject.parseObject(jsonString);
@@ -128,6 +133,7 @@ public class AdminFeedBackManageController {
 	@ResponseBody
 	public JSONArray Handled(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		feedBackService.handled(id);
 		Task task = feedBackService.getTask(id);
 		taskService.delete(task);
@@ -142,6 +148,7 @@ public class AdminFeedBackManageController {
 	@ResponseBody
 	public JSONArray leagalTask(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		feedBackService.handled(id);
 		Task task = feedBackService.getTask(id);
 		messageService.add("您反馈的" + task.name + "任务,经管理员审核不存在欺诈行为，感谢您的理解与配合！", 0, 0, Integer.valueOf(task.senderid), 0);
@@ -150,17 +157,18 @@ public class AdminFeedBackManageController {
 	
 	@RequestMapping("/openusermanage")
 	@ResponseBody
-	public JSONArray openUserManage(int receiverIDNumber,int senderIDNumber,int id)
+	public JSONArray openUserManage(int receiverstudentId,int senderstudentId,int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		String receiverPoints = request.getParameter("receiverpoints");
 		String senderPoints = request.getParameter("senderpoints");
 		Task task = feedBackService.getTask(id);
-		adminUserManageService.changePoints(receiverIDNumber, Integer.valueOf(receiverPoints));
-		adminUserManageService.changePoints(senderIDNumber, Integer.valueOf(senderPoints));
+		adminUserManageService.changePoints(receiverstudentId, Integer.valueOf(receiverPoints));
+		adminUserManageService.changePoints(senderstudentId, Integer.valueOf(senderPoints));
 		feedBackService.handled(id);
 		taskService.delete(task);
-		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverIDNumber, 0);
-		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderIDNumber, 0);
+		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverstudentId, 0);
+		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderstudentId, 0);
 		return list();
 	}
 	
@@ -168,6 +176,7 @@ public class AdminFeedBackManageController {
 	@ResponseBody
 	public JSONArray turnUserManage(int id)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		feedBackService.setHandled(id);
 		return adminUserManageController.list();
 	}

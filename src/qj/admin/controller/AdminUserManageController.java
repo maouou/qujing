@@ -36,6 +36,7 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray list(/*Map<String, Object>map,Integer start*/)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		List<User> users = null;
 		/*Page page;
 		if(start==null)
@@ -81,6 +82,7 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray resetPassword(int IDNumber)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		System.out.println("重置用户密码");
 		adminUserManageService.handleUser(IDNumber, 1);
 		return list();
@@ -89,6 +91,7 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray deleteAccount(int IDNumber)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		adminUserManageService.handleUser(IDNumber, 2);
 		return list();
 	}
@@ -96,6 +99,7 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray stopAccount(int IDNumber)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		adminUserManageService.handleUser(IDNumber, 3);
 		return list();
 	}
@@ -103,6 +107,7 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray wakeAccount(int IDNumber)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		adminUserManageService.handleUser(IDNumber, 4);
 		return list();
 	}
@@ -110,6 +115,7 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray changePoints(int IDNumber,int points)
 	{
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		System.out.println("修改积分");
 		adminUserManageService.changePoints(IDNumber, points);
 		return list();

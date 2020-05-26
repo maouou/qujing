@@ -63,11 +63,11 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	@Override
-	public User get(int IDNumber) {
+	public User get(int studentId) {
 		// TODO 自动生成的方法存根
 		User user;
 		Session session = sessionFactory.getCurrentSession();
-		String hqlString = "SELECT u FROM User As u WHERE u.IDNumber like '" + IDNumber + "'";
+		String hqlString = "SELECT u FROM User As u WHERE u.studentId like '" + studentId + "'";
 		Query query = session.createQuery(hqlString);
 		user = (User)query.uniqueResult();
 		return user;
@@ -96,7 +96,7 @@ public class UserDAOImpl implements UserDAO{
 	}
 
 	@Override
-	public boolean isExist(int IDNumber) {
+	public boolean isExist(int studentId) {
 		// TODO 自动生成的方法存根
 		return false;
 	}
