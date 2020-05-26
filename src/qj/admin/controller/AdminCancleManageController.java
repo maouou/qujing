@@ -27,6 +27,8 @@ import qj.util.Page;
 @Controller
 @RequestMapping("/admin/canclemanage")
 public class AdminCancleManageController {
+	
+	//测试一下
 	@Autowired
 	CancleTaskService cancleTaskService;
 	@Autowired
