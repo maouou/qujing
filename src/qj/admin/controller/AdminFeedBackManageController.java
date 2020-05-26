@@ -60,11 +60,11 @@ public class AdminFeedBackManageController {
 		{
 			FeedBack feedBack = feedBacks.get(i);
 			Task task = feedBack.getTask();
-			if(task.receiverCancle == 2)
+			if(task.getState() == 7)
 				continue;
-			if(task.receiverCancle == 0 && task.senderCancle == 1)
+			if(task.getState()==1)
 				continue;
-			if(task.receiverCancle == 0 && task.senderCancle == 0)
+			if(task.getState()==2)
 				continue;
 			User receiver = adminUserManageService.get(Integer.valueOf(feedBack.getTask().receiverid));
 			User sender = adminUserManageService.get(Integer.valueOf(feedBack.getTask().senderid));

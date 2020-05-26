@@ -2,45 +2,42 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
   <display-name>qujing</display-name>
   <filter>
-    <filter-name>struts2</filter-name>
-    <filter-class>
+    	<filter-name>struts2</filter-name>
+    	<filter-class>
             org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
-    </filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>struts2</filter-name>
-    <url-pattern>*.action</url-pattern>
-  </filter-mapping>
-     <filter>  
-     <filter-name>HeaderFilter</filter-name>  
-     <filter-class>qj.admin.filter.HeaderFilter</filter-class><!--你过滤器的包 -->  
-   </filter>  
-   <filter-mapping>  
-     <filter-name>HeaderFilter</filter-name>  
-     <url-pattern>*.do</url-pattern><!-- 你开放的接口前缀  -->  
-   </filter-mapping>
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:applicationContext.xml</param-value>
-  </context-param>
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-  <servlet>
-    <servlet-name>springMVC</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>classpath:spring-mvc.xml</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>springMVC</servlet-name>
-    <url-pattern>*.do</url-pattern>
-  </servlet-mapping>
+        </filter-class>
+  	</filter>
+
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>*.action</url-pattern>
+	</filter-mapping>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	 <servlet>
+        <servlet-name>springMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <!-- 此处配置的是SpringMVC的配置文件 -->
+            <param-value>classpath:spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springMVC</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+	
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>login.jsp</welcome-file>
+     <welcome-file>index.jsp</welcome-file>
+     <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

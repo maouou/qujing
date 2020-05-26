@@ -31,11 +31,11 @@
 		  <!-- Mysql8驱动和URL -->
         <property name="driverClass" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl"
-                  value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=utf8" />
+                  value="jdbc:mysql://47.93.213.196:3306/qujing?useUnicode=true&amp;characterEncoding=utf8" />
 
         <!-- Mysql5驱动和URL -->
-        <property name="user" value="root" />
-        <property name="password" value="root" />
+        <property name="user" value="qujing" />
+        <property name="password" value="7xbtASLxzMBnnMG7"/>
 
 		<!-- 请求超时时间 -->
 		<property name="checkoutTimeout" value="30000" />

@@ -82,8 +82,7 @@ public class CancleDAOImpl implements CancleDAO {
 		// TODO 自动生成的方法存根
 		CancleTask cancleTask = get(id);
 		Task task = cancleTask.getTask();
-		task.setReceiverCancle(0);
-		task.setSenderCancle(1);
+		task.setState(2);
 	}
 
 	@Override
@@ -91,8 +90,7 @@ public class CancleDAOImpl implements CancleDAO {
 		// TODO 自动生成的方法存根
 		CancleTask cancleTask = get(id);
 		Task task = cancleTask.getTask();
-		task.setReceiverCancle(0);
-		task.setSenderCancle(1);
+		task.setState(3);
 	}
 
 	@Override
@@ -100,8 +98,7 @@ public class CancleDAOImpl implements CancleDAO {
 		// TODO 自动生成的方法存根
 		CancleTask cancleTask = get(id);
 		Task task = cancleTask.getTask();
-		task.setReceiverCancle(0);
-		task.setSenderCancle(0);
+		task.setState(1);
 	}
 
 }

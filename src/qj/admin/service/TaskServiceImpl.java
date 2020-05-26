@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
 		task.setPoints(credit);
 		tasktype = tasktypeDAO.get(Integer.parseInt(taskType));			
 		task.setTaskType(tasktype);
-		task.setPublishTime(timestamp);		
+		task.setTime(timestamp);		
 		task.setDeadline(timestamp2);
 		
 		task.setSenderid("221701237");//发布用户由登入时候获取，这里先随意
@@ -55,8 +55,7 @@ public class TaskServiceImpl implements TaskService {
 		else {
 			task.setExpedited(0);
 		}
-		task.setSenderCancle(1);
-		task.setReceiverCancle(0);
+		task.setState(1);
 		taskDAO.add(task);
 	}
 	@Override
