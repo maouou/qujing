@@ -35,14 +35,13 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public void update(User user, int type) {
 		//type1->reset password
+		Session session = sessionFactory.getCurrentSession();
 		if(type == 1)
 		{
 			  ByteSource credentialsSalt = ByteSource.Util.bytes(user.studentId);
 		        String pwd = new SimpleHash("MD5","123456ABc",
 		                credentialsSalt,1024).toBase64();
-			user.setPassword(pwd);
-			Session session = sessionFactory.getCurrentSession();
-			session.update(user);
+			user.setPassword(pwd);	
 		}
 		//type2->delete
 		if(type == 2)
@@ -59,6 +58,7 @@ public class UserDAOImpl implements UserDAO{
 		{
 			user.setState(1);
 		}
+		session.update(user);
 	}
 
 	@Override
@@ -128,7 +128,9 @@ public class UserDAOImpl implements UserDAO{
 	public void changePoints(User user, int points) {
 		// TODO 自动生成的方法存根
 		user.setPoints(points);
-		
+		System.out.println("修改用户积分");
+		Session session = sessionFactory.getCurrentSession();
+		session.update(user);
 	}
 	
 }
