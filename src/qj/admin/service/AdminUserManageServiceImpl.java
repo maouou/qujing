@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import qj.admin.aspect.LogAnno;
 import qj.admin.dao.UserDAO;
 import qj.admin.pojo.User;
 import qj.util.Page;
@@ -33,11 +34,13 @@ public class AdminUserManageServiceImpl implements AdminUserManageService{
 		User user = userDAO.get(IDNumber);
 		userDAO.update(user, type);
 	}
-
+	
 	@Override
+	@LogAnno(operatorType = "修改用户积分")
 	public void changePoints(int IDNumber, int points) {
 		// TODO 自动生成的方法存根
 		User user = userDAO.get(IDNumber);
+		System.out.println("查找修改积分用户完成");
 		userDAO.changePoints(user, points);
 	}
 
