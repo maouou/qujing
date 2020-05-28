@@ -30,6 +30,7 @@ public class AdminUserManageServiceImpl implements AdminUserManageService{
 	}
 
 	@Override
+	@LogAnno(operatorType = "修改账户状态")
 	public void handleUser(int IDNumber, int type) {
 		User user = userDAO.get(IDNumber);
 		userDAO.update(user, type);
