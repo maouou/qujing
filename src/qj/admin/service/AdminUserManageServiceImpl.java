@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import qj.admin.aspect.LogAnno;
 import qj.admin.dao.UserDAO;
 import qj.admin.pojo.User;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Service("AdminUserManageService")
 public class AdminUserManageServiceImpl implements AdminUserManageService{

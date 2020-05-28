@@ -163,6 +163,12 @@
             <artifactId>shiro-core</artifactId>
             <version>1.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.10duke.client.jwt</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>1.0.1</version>
+            <type>pom</type>
+        </dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>

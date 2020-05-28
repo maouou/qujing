@@ -3,7 +3,7 @@ package qj.admin.service;
 import java.util.List;
 
 import qj.admin.pojo.CancleTask;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 public interface CancleTaskService {
 	int add(CancleTask cancleTask);

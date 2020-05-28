@@ -13,6 +13,7 @@ import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.hibernate.annotations.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,10 +22,11 @@ import com.alibaba.fastjson.JSONObject;
 
 import qj.admin.pojo.User;
 import qj.admin.service.AdminUserManageService;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Controller
 @RequestMapping("/admin/usermanage")
+@CrossOrigin(origins="*",maxAge=3600)
 public class AdminUserManageController {
 	@Autowired
 	AdminUserManageService adminUserManageService;
@@ -36,7 +38,6 @@ public class AdminUserManageController {
 	@ResponseBody
 	public JSONArray list(/*Map<String, Object>map,Integer start*/)
 	{
-		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		List<User> users = null;
 		/*Page page;
 		if(start==null)

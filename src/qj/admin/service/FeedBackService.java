@@ -6,7 +6,7 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 
 import qj.admin.pojo.FeedBack;
 import qj.admin.pojo.Task;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 public interface  FeedBackService {
 	public int getTotal();

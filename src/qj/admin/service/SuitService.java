@@ -4,7 +4,7 @@ import java.util.List;
 
 import qj.admin.pojo.Suit;
 import qj.admin.pojo.Task;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 public interface SuitService {
 	int add(Suit suit);

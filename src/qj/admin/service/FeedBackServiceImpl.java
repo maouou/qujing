@@ -11,7 +11,7 @@ import qj.admin.dao.FeedBackDAO;
 import qj.admin.pojo.FeedBack;
 import qj.admin.pojo.Task;
 import qj.admin.pojo.User;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Service("FeedBackService")
 public class FeedBackServiceImpl implements FeedBackService{

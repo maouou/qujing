@@ -22,7 +22,7 @@ import qj.admin.dao.TaskDAO;
 import qj.admin.dao.TasktypeDAO;
 import qj.admin.pojo.Task;
 import qj.admin.pojo.Tasktype;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Service("TaskService")
 public class TaskServiceImpl implements TaskService {

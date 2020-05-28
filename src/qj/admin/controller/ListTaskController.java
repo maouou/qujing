@@ -8,7 +8,8 @@ import com.opensymphony.xwork2.ActionContext;
 
 import qj.admin.pojo.Task;
 import qj.admin.service.TaskService;
-import qj.util.Page;
+import qj.admin.util.Page;
+
 import java.util.List;
 import java.util.Map;
 
