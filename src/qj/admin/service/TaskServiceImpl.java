@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import qj.admin.aspect.LogAnno;
 import qj.admin.dao.TaskDAO;
 import qj.admin.dao.TasktypeDAO;
 import qj.admin.pojo.Task;
@@ -90,6 +91,7 @@ public class TaskServiceImpl implements TaskService {
 		return task;
 	}
 	@Override
+	@LogAnno(operatorType = "反馈属实，删除任务")
 	public void delete(Task task) {
 		taskDAO.delete(task);
 		// TODO 自动生成的方法存根

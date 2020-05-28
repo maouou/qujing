@@ -34,6 +34,7 @@ public class FeedBackServiceImpl implements FeedBackService{
 		return feedBack;
 	}
 	@Override
+	@LogAnno(operatorType = "反馈不属实，撤销")
 	public void handled(int id) {
 		// TODO 自动生成的方法存根
 		feedBackDAO.handled(id);

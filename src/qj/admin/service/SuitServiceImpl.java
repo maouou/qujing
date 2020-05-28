@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import qj.admin.aspect.LogAnno;
 import qj.admin.dao.SuitDAO;
 import qj.admin.pojo.Suit;
 import qj.admin.pojo.Task;
@@ -54,6 +55,7 @@ public class SuitServiceImpl implements SuitService {
 	}
 
 	@Override
+	@LogAnno(operatorType = "用户举报属实，删除任务")
 	public void setHandeled(int id) {
 		// TODO 自动生成的方法存根
 		suitDAO.handleed(id);
@@ -69,6 +71,7 @@ public class SuitServiceImpl implements SuitService {
 	}
 
 	@Override
+	@LogAnno(operatorType = "撤销用户举报")
 	public void setHandled(int id) {
 		suitDAO.handleed(id);
 	}
