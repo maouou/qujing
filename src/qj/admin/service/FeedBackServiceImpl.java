@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import qj.admin.aspect.LogAnno;
 import qj.admin.dao.FeedBackDAO;
 import qj.admin.pojo.FeedBack;
 import qj.admin.pojo.Task;
@@ -51,6 +52,7 @@ public class FeedBackServiceImpl implements FeedBackService{
 		return task;
 	}
 	@Override
+	@LogAnno(operatorType = "删除反馈")
 	public void setHandled(int id) {
 		// TODO 自动生成的方法存根
 		feedBackDAO.handled(id);

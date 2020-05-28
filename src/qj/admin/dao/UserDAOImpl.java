@@ -35,8 +35,10 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public void update(User user, int type) {
 		//type1->reset password
+		//type=1重置密码
+		//type=2冻结
 		Session session = sessionFactory.getCurrentSession();
-		if(type == 1)
+		if(type == 1&&user.getState()==1)
 		{
 			  ByteSource credentialsSalt = ByteSource.Util.bytes(user.studentId);
 		        String pwd = new SimpleHash("MD5","123456ABc",
@@ -44,17 +46,17 @@ public class UserDAOImpl implements UserDAO{
 			user.setPassword(pwd);	
 		}
 		//type2->delete
-		if(type == 2)
+		if(type == 2&&user.getState()==1)
 		{
 			user.setState(0);
 		}
 		//tyepe3->stop
-		if(type == 3)
+		if(type == 3&&user.getState()==1)
 		{
 			user.setState(2);
 		}
 		//type4->wake
-		if(type == 4)
+		if(type == 4&&user.getState()==2)
 		{
 			user.setState(1);
 		}

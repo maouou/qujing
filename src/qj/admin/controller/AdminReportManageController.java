@@ -65,12 +65,6 @@ public class AdminReportManageController {
 		{
 			Suit suit = suits.get(i);
 			Task task= suit.getTask();
-			if(task.getState()==7)
-				continue;
-			if(task.getState()==1)
-				continue;
-			if(task.getState()==2)
-				continue;
 			User receiver = adminUserManageService.get(Integer.valueOf(suit.getTask().receiverid));
 			User sender = adminUserManageService.get(Integer.valueOf(suit.getTask().senderid));
 			String taskName = suit.getTask().name;
@@ -88,6 +82,7 @@ public class AdminReportManageController {
 		}
 		jsonString += "]";
 		JSONArray jsonObject = JSONArray.parseArray(jsonString);
+		System.out.println(jsonString);
 		/*map.put("suits", suits);
 		map.put("page", page);
 		return "admin/adminReportManage";*/

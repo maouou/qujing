@@ -62,6 +62,17 @@ public class AdminUserManageController {
 			String userName = user.getUsername();
 			String points = String.valueOf(user.getPoints());
 			String state = String.valueOf(user.state);
+			if(state.equals("0"))
+			{
+				state="被注销";
+			}
+			else if(state.equals("1")){
+				state="正常";
+			}
+			else if(state.equals("2"))
+			{
+				state="封禁";
+			}
 			String tempString = "{\"userIDNumber\":\"" + userIDNumber + "\",\"userName\":\"" + userName + "\",\"points\":\"" + points
 								+ "\",\"state\":\"" + state + "\"}";
 			if(i == users.size()-1)
