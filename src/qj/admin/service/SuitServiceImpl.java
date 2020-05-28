@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import qj.admin.dao.SuitDAO;
 import qj.admin.pojo.Suit;
 import qj.admin.pojo.Task;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Service("SuitService")
 public class SuitServiceImpl implements SuitService {

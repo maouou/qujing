@@ -10,7 +10,7 @@ import qj.admin.aspect.LogAnno;
 import qj.admin.dao.CancleDAO;
 import qj.admin.pojo.CancleTask;
 import qj.admin.pojo.User;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Service("CancleTaskService")
 public class CancleTaskServiceImpl implements CancleTaskService{

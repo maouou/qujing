@@ -1,4 +1,4 @@
-package qj.util;
+package qj.admin.util;
 
 public class Page {
     int start;

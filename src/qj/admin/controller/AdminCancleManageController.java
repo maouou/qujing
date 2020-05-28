@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.service.spi.Startable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -22,10 +23,11 @@ import qj.admin.pojo.User;
 import qj.admin.service.AdminUserManageService;
 import qj.admin.service.CancleTaskService;
 import qj.admin.service.MessageService;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Controller
 @RequestMapping("/admin/canclemanage")
+@CrossOrigin(origins="*",maxAge=3600)
 public class AdminCancleManageController {
 	
 	//测试一下

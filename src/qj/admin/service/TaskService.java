@@ -3,7 +3,7 @@ package qj.admin.service;
 import java.util.List;
 
 import qj.admin.pojo.Task;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 
 public interface TaskService {

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.hibernate.dialect.PointbaseDialect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -23,10 +24,11 @@ import qj.admin.service.AdminUserManageService;
 import qj.admin.service.MessageService;
 import qj.admin.service.SuitService;
 import qj.admin.service.TaskService;
-import qj.util.Page;
+import qj.admin.util.Page;
 
 @Controller
 @RequestMapping("/admin/reportmanage")
+@CrossOrigin(origins="*",maxAge=3600)
 public class AdminReportManageController {
 	@Autowired
 	SuitService suitService;
