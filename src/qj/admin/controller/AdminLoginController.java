@@ -4,9 +4,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,10 +21,11 @@ import qj.admin.util.JwtUtil;
 
 @Controller
 @RequestMapping("/adminlogin")
+@CrossOrigin(origins="*",maxAge=3600)
 public class AdminLoginController {
 	@Autowired
 	HttpServletResponse response;
-	@Autowired
+	@Autowired(required=false)
 	HttpServletRequest request;
 	@Autowired
 	AdminService adminService;
@@ -46,6 +49,10 @@ public class AdminLoginController {
 			System.out.println(jwtToken);
 			response.setHeader(JwtUtil.AUTH_HEADER, jwtToken);
 			System.out.println("成功签发token并返回");
+			HttpSession session = request.getSession();
+			session.setAttribute("username", usernameString);
+			session.setAttribute("password", passwordString);
+			System.out.println("session的用户名：" + session.getAttribute("username"));
 			return "success";
 		}
 		else

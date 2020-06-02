@@ -49,8 +49,6 @@
 	  <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="index.html"/>
-            <mvc:exclude-mapping path="/adminlogin/login.do"/>
             <bean class="qj.admin.filter.AuthenticationInterceptor"></bean>
         </mvc:interceptor>
     </mvc:interceptors>

@@ -159,18 +159,16 @@ public class AdminFeedBackManageController {
 	
 	@RequestMapping("/openusermanage")
 	@ResponseBody
-	public JSONArray openUserManage(int receiverstudentId,int senderstudentId,int id)
+	public JSONArray openUserManage(int receiverstudentId,int senderstudentId,int id,int receiverpoints,int senderpoints)
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
-		String receiverPoints = request.getParameter("receiverpoints");
-		String senderPoints = request.getParameter("senderpoints");
 		Task task = feedBackService.getTask(id);
-		adminUserManageService.changePoints(receiverstudentId, Integer.valueOf(receiverPoints));
-		adminUserManageService.changePoints(senderstudentId, Integer.valueOf(senderPoints));
+		adminUserManageService.changePoints(receiverstudentId, Integer.valueOf(receiverpoints));
+		adminUserManageService.changePoints(senderstudentId, Integer.valueOf(senderpoints));
 		feedBackService.handled(id);
 		taskService.delete(task);
-		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverstudentId, 0);
-		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderstudentId, 0);
+		messageService.add("您的积分已被管理员调整为" + receiverpoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverstudentId, 0);
+		messageService.add("您的积分已被管理员调整为" + receiverpoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderstudentId, 0);
 		return list();
 	}
 	

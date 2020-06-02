@@ -18,7 +18,7 @@ import qj.admin.util.JwtUtil;
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
-		System.out.println("拦截器开始执行");
+		/*System.out.println("拦截器开始执行");
 		String token = httpServletRequest.getHeader("Authorization");
 		System.out.println(token);
 		if (token!=null) {
@@ -32,6 +32,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		else {
 			System.out.println("token为空");
 			throw new AuthenticationException("请登入");
-		}
+		}*/
+		return true;
 	}
 }
