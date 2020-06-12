@@ -53,6 +53,7 @@ public class AdminLoginController {
 			session.setAttribute("username", usernameString);
 			session.setAttribute("password", passwordString);
 			System.out.println("session的用户名：" + session.getAttribute("username"));
+			response.setStatus(200);
 			return "success";
 		}
 		else

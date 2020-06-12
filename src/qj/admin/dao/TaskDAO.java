@@ -11,7 +11,7 @@ public interface TaskDAO {
     void add(Task task);
     void update(Task user);
     void delete(Task task) ;
-    void reset(int id);
+    void reset(Task task);
     Task get(int id);
     List<Task> list();
     List<Task> list(int start, int count) ;

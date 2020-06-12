@@ -50,9 +50,11 @@ public class TaskDAOImpl implements TaskDAO {
 	}
 
 	@Override
-	public void reset(int id) {
+	public void reset(Task task) {
 		// TODO Auto-generated method stub
-
+		task.setState(2);
+		Session session = sessionFactory.getCurrentSession();
+		session.update(task);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import qj.admin.pojo.User;
 import qj.admin.service.AdminUserManageService;
+import qj.admin.util.MQUtil;
 import qj.admin.util.Page;
 
 @Controller
@@ -93,44 +95,50 @@ public class AdminUserManageController {
 	}
 	@RequestMapping("/resetpassword")
 	@ResponseBody
-	public JSONArray resetPassword(int IDNumber)
+	public String resetPassword(int IDNumber) throws IOException, TimeoutException
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		System.out.println("重置用户密码");
+		MQUtil.send("method=update&target=user&studentId=" + IDNumber);
 		adminUserManageService.handleUser(IDNumber, 1);
-		return list();
+		return "forward:/admin/usermanage/list.do";
 	}
 	@RequestMapping("/deleteaccount")
 	@ResponseBody
-	public JSONArray deleteAccount(int IDNumber)
+	public String deleteAccount(int IDNumber) throws IOException, TimeoutException
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
+		MQUtil.send("method=update&target=user&studentId=" + IDNumber);
 		adminUserManageService.handleUser(IDNumber, 2);
-		return list();
+		return "forward:/admin/usermanage/list.do";
 	}
 	@RequestMapping("/stopaccount")
 	@ResponseBody
-	public JSONArray stopAccount(int IDNumber)
+	public String stopAccount(int IDNumber) throws IOException, TimeoutException
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
+		MQUtil.send("method=update&target=user&studentId=" + IDNumber);
 		adminUserManageService.handleUser(IDNumber, 3);
-		return list();
+		return "forward:/admin/usermanage/list.do";
 	}
 	@RequestMapping("/wakeaccount")
 	@ResponseBody
-	public JSONArray wakeAccount(int IDNumber)
+	public String wakeAccount(int IDNumber) throws IOException, TimeoutException
 	{
-		response.setHeader("Access-Control-Allow-Origin", "*"); 
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		MQUtil.send("method=update&target=user&studentId=" + IDNumber);
 		adminUserManageService.handleUser(IDNumber, 4);
-		return list();
+		return "forward:/admin/usermanage/list.do";
 	}
 	@RequestMapping("/changepoints")
 	@ResponseBody
-	public JSONArray changePoints(int IDNumber,int points)
+	public String changePoints(int IDNumber,int points) throws IOException, TimeoutException
 	{
-		response.setHeader("Access-Control-Allow-Origin", "*"); 
+		//response.setHeader("Access-Control-Allow-Origin", "*"); 
 		System.out.println("修改积分");
+		MQUtil.send("method=update&target=user&studentId=" + IDNumber);
+		System.out.println("一次了");
 		adminUserManageService.changePoints(IDNumber, points);
-		return list();
+		return "forward:/admin/usermanage/list.do";
 	}
 }

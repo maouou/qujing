@@ -1,0 +1,22 @@
+/* 大窗口样式 */
+.nav {
+  box-shadow: 0 0 10px #333;
+  border-radius: 10px;
+  height: 600px;
+  width: 1200px;
+  margin: auto
+}
+
+/* 顶部样式 */
+.el-header {
+  /* background-color: #c1cbd8;
+    color: #333; */
+  line-height: 60px;
+}
+
+.logo {
+  font-family: "Microsoft YaHei";
+  font-size: 24px;
+  color: #06AAF4;
+  background-color: #CFF;
+}

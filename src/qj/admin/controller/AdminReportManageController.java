@@ -1,7 +1,9 @@
 package qj.admin.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +19,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
+import qj.admin.dao.TaskDAO;
+import qj.admin.dao.UserDAO;
 import qj.admin.pojo.Suit;
 import qj.admin.pojo.Task;
 import qj.admin.pojo.User;
@@ -24,6 +28,7 @@ import qj.admin.service.AdminUserManageService;
 import qj.admin.service.MessageService;
 import qj.admin.service.SuitService;
 import qj.admin.service.TaskService;
+import qj.admin.util.MQUtil;
 import qj.admin.util.Page;
 
 @Controller
@@ -44,6 +49,10 @@ public class AdminReportManageController {
 	AdminUserManageController adminUserManageController;
 	@Autowired
 	HttpServletResponse response;
+	@Autowired
+	UserDAO userdao;
+	@Autowired
+	TaskDAO taskdao;
 	
 	@RequestMapping("/list")
 	@ResponseBody
@@ -67,8 +76,8 @@ public class AdminReportManageController {
 		{
 			Suit suit = suits.get(i);
 			Task task= suit.getTask();
-			User receiver = adminUserManageService.get(Integer.valueOf(suit.getTask().receiverid));
-			User sender = adminUserManageService.get(Integer.valueOf(suit.getTask().senderid));
+			User receiver = adminUserManageService.get(Integer.valueOf(suit.getTask().senderid));
+			User sender = adminUserManageService.get(Integer.valueOf(suit.getTask().receiverid));
 			String taskName = suit.getTask().name;
 			String receiverName = receiver.getUsername();
 			String senderName = sender.getUsername();
@@ -97,8 +106,8 @@ public class AdminReportManageController {
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		Suit suit = null;
 		suit = suitService.get(id);
-		User receiver = adminUserManageService.get(Integer.valueOf(suit.getTask().receiverid));
-		User sender = adminUserManageService.get(Integer.valueOf(suit.getTask().senderid));
+		User receiver = adminUserManageService.get(Integer.valueOf(suit.getTask().senderid));
+		User sender = adminUserManageService.get(Integer.valueOf(suit.getTask().receiverid));
 		Task task = suitService.getTask(id);
 		int receiverpoints = Integer.valueOf(task.points) + receiver.points;
 		String taskName = suit.getTask().name;
@@ -128,26 +137,33 @@ public class AdminReportManageController {
 	}
 	@RequestMapping("deletetask")
 	@ResponseBody
-	public JSONArray deleteTask(int id)
+	public JSONArray deleteTask(int id) throws IOException, TimeoutException
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		suitService.setHandeled(id);
 		Task task = suitService.getTask(id);
+		MQUtil.send("method=update&target=task&id=" + task.id);
+		MQUtil.send("method=update&target=user&studentId=" + task.receiverid);
+		MQUtil.send("method=update&target=user&studentId=" + task.senderid);
 		taskservice.delete(task);
-		int points = Integer.valueOf(task.points) + adminUserManageService.get(Integer.valueOf(task.receiverid)).points;
-		adminUserManageService.changePoints(Integer.valueOf(task.receiverid), points);
-		messageService.add("您发布的" + task.name + "任务,经管理员审核因涉嫌违规，已被删除。", 0, 0, Integer.valueOf(task.receiverid), 0);
-		messageService.add("您举报的" + task.name + "任务,经管理员审核因涉嫌违规，已被删除。感谢你的监督", 0, 0, Integer.valueOf(task.senderid), 0);
+		int points = Integer.valueOf(task.points) + adminUserManageService.get(Integer.valueOf(task.senderid)).points;
+		adminUserManageService.changePoints(Integer.valueOf(task.senderid), points);
+		userdao.reduceReceivedTaskNumber(userdao.get(task.receiverid));
+		userdao.addReportedNumber(userdao.get(task.senderid));
+		messageService.add("您发布的" + task.name + "任务,经管理员审核因涉嫌违规，已被删除。", 0, 0, Integer.valueOf(task.senderid), 0);
+		messageService.add("您举报的" + task.name + "任务,经管理员审核因涉嫌违规，已被删除。感谢你的监督", 0, 0, Integer.valueOf(task.receiverid), 0);
 		return list();
 	}
 	@RequestMapping("legaltask")
 	@ResponseBody
-	public JSONArray leagalTask(int id)
+	public JSONArray leagalTask(int id) throws IOException, TimeoutException
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		suitService.setHandled(id);
 		Task task = suitService.getTask(id);
-		messageService.add("您反馈的" + task.name + "任务,经管理员审核不存在违规行为，感谢您的理解与配合！", 0, 0, Integer.valueOf(task.senderid), 0);
+		MQUtil.send("method=update&target=task&id=" + task.id);
+		taskdao.reset(task);
+		messageService.add("您反馈的" + task.name + "任务,经管理员审核不存在违规行为，感谢您的理解与配合！", 0, 0, Integer.valueOf(task.receiverid), 0);
 		return list();
 	}
 	
@@ -164,16 +180,21 @@ public class AdminReportManageController {
 	
 	@RequestMapping("openusermanage")
 	@ResponseBody
-	public JSONArray openUserManage(int receiverstudentId,int senderstudentId,int id)
+	public JSONArray openUserManage(int receiverstudentId,int senderstudentId,int id) throws IOException, TimeoutException
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		String receiverPoints = request.getParameter("receiverpoints");
 		String senderPoints = request.getParameter("senderpoints");
 		Task task = suitService.getTask(id);
+		MQUtil.send("method=update&target=task&id=" + task.id);
+		MQUtil.send("method=update&target=user&studentId=" + receiverstudentId);
+		MQUtil.send("method=update&target=user&studentId=" + senderstudentId);
 		adminUserManageService.changePoints(receiverstudentId, Integer.valueOf(receiverPoints));
 		adminUserManageService.changePoints(senderstudentId, Integer.valueOf(senderPoints));
 		suitService.setHandeled(id);
 		taskservice.delete(task);
+		userdao.reduceReceivedTaskNumber(userdao.get(task.receiverid));
+		userdao.addReportedNumber(userdao.get(task.senderid));
 		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, receiverstudentId, 0);
 		messageService.add("您的积分已被管理员调整为" + receiverPoints + "。原因请见上条，感谢您的理解与配合。", 0, 0, senderstudentId, 0);
 		return list();

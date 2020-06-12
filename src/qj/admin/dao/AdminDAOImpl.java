@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import qj.admin.pojo.Admin;
+import qj.admin.util.MQUtil;
 
 @Repository("AdminDAO")
 public class AdminDAOImpl implements AdminDAO{

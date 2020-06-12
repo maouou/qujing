@@ -19,6 +19,16 @@
 	</properties>
 
 	<dependencies>
+	    <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.7.3</version>
+        </dependency>
 		<!-- Spring 核心依赖 -->
 		<dependency>
 			<groupId>org.springframework</groupId>

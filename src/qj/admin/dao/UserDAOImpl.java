@@ -1,6 +1,11 @@
 package qj.admin.dao;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import qj.admin.pojo.User;
+import qj.admin.util.MQUtil;
 
 @Repository("UserDAO")
 public class UserDAOImpl implements UserDAO{
@@ -38,6 +44,15 @@ public class UserDAOImpl implements UserDAO{
 		//type=1重置密码
 		//type=2冻结
 		Session session = sessionFactory.getCurrentSession();
+		/*try {
+			MQUtil.send("method=update&studentId=" + user.studentId);
+		} catch (IOException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}*/
 		if(type == 1&&user.getState()==1)
 		{
 			  ByteSource credentialsSalt = ByteSource.Util.bytes(user.studentId);
@@ -53,11 +68,18 @@ public class UserDAOImpl implements UserDAO{
 		//tyepe3->stop
 		if(type == 3&&user.getState()==1)
 		{
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			calendar.add(Calendar.DAY_OF_MONTH, 1);
+			Date date = new Date();
+			date = calendar.getTime();
+			user.setEndTime(date);
 			user.setState(2);
 		}
 		//type4->wake
 		if(type == 4&&user.getState()==2)
 		{
+			user.setEndTime(null);
 			user.setState(1);
 		}
 		session.update(user);
@@ -117,7 +139,7 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public User get(String userName) {
 		// TODO 自动生成的方法存根
-		return null;
+		return get(Integer.valueOf(userName));
 	}
 
 	@Override
@@ -129,9 +151,48 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public void changePoints(User user, int points) {
 		// TODO 自动生成的方法存根
+		/*try {
+			MQUtil.send("method=update&studentId=" + user.studentId);
+		} catch (IOException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}*/
 		user.setPoints(points);
 		System.out.println("修改用户积分");
 		Session session = sessionFactory.getCurrentSession();
+		session.update(user);
+	}
+
+	@Override
+	public void reduceReceivedTaskNumber(User user) {
+		// TODO 自动生成的方法存根
+		Session session = sessionFactory.getCurrentSession();
+		int tempNumber = user.receiveTaskNumber;
+		tempNumber = tempNumber - 1;
+		user.setReceiveTaskNumber(tempNumber);
+		session.update(user);
+	}
+
+	@Override
+	public void addReportedNumber(User user) {
+		// TODO 自动生成的方法存根
+		Session session = sessionFactory.getCurrentSession();
+		int tempNumber = user.reportedNumber;
+		tempNumber = tempNumber + 1;
+		user.setReportedNumber(tempNumber);
+		session.update(user);
+	}
+
+	@Override
+	public void addMaliciousAcceptanceNumber(User user) {
+		// TODO 自动生成的方法存根
+		Session session = sessionFactory.getCurrentSession();
+		int tempNumber = user.maliciousAcceptanceNumber;
+		tempNumber = tempNumber + 1;
+		user.setMaliciousAcceptanceNumber(tempNumber);
 		session.update(user);
 	}
 	

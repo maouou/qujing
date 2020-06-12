@@ -16,4 +16,7 @@ public interface UserDAO {
 	boolean isExist(int IDNumber);
 	boolean isExist(String userName);
 	User get(String userName);
+	void reduceReceivedTaskNumber(User user);
+	void addReportedNumber(User user);
+	void addMaliciousAcceptanceNumber(User user);
 }
