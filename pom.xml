@@ -14,7 +14,7 @@
 		<struts.version>2.5.10</struts.version>
 		<spring.version>5.2.5.RELEASE</spring.version>
 		<hibernate.version>5.1.7.Final</hibernate.version>
-		<jackson.version>2.9.8</jackson.version>
+		<jackson.version>2.13.4.1</jackson.version>
 		<log4j2.version>2.6.2</log4j2.version>
 	</properties>
 
